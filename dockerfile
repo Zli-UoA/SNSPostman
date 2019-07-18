@@ -4,3 +4,4 @@ WORKDIR /node/src/app
 ADD ./dist/main.js /node/src/app
 
 CMD [ "node", "main.js" ]
+
