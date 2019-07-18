@@ -8,13 +8,14 @@
     "dev": "parcel serve -t node src/main.ts",
     "start": "NODE_ENV=dev node dist/main.js",
     "build": "parcel build -t node --bundle-node-modules --no-source-maps src/main.ts",
-    "deploy": "npm run build && gcloud builds submit --project snspostman --tag gcr.io/snspostman/bot_image"
+    "deploy": "gcloud builds submit --project snspostman --tag gcr.io/snspostman/bot_image"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@types/dotenv": "^6.1.1",
+    "@types/node-emoji": "^1.8.1",
     "@types/node-fetch": "^2.3.7",
     "dotenv": "^8.0.0",
     "parcel-bundler": "^1.12.3",
@@ -22,6 +23,7 @@
   },
   "dependencies": {
     "@slack/bolt": "^1.2.0",
+    "node-emoji": "^1.10.0",
     "node-fetch": "^2.6.0"
   }
 }

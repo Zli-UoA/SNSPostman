@@ -2,6 +2,7 @@ import { App, AppMentionEvent, Context, MessageEvent } from "@slack/bolt";
 import { getHistory, getImage } from "./request";
 import { postTwitter, postTwitterWithImage } from "./ifttt";
 import { uploadImage } from "./imgur";
+import * as emoji from "node-emoji";
 
 export const mentionRoute = async (
   app: App,
@@ -12,41 +13,58 @@ export const mentionRoute = async (
     await app.client.chat.postMessage({
       token: context.botToken,
       channel: event.channel,
-      text: "権限がありません",
-      thread_ts: event.thread_ts
+      text: "権限がありません"
     });
     return;
   }
-  if (event.text.match(postPhrase())) {
-    const [threadRoot] = await getHistory(process.env.SLACK_OAUTH_TOKEN, {
-      channel: event.channel
-    })
-      .then(x => x.messages as Array<MessageEvent>)
-      .then(xs => xs.filter(x => x.ts === event.thread_ts));
 
-    await post(threadRoot);
-
+  if (!event.thread_ts) {
     await app.client.chat.postMessage({
       token: context.botToken,
       channel: event.channel,
-      text: `\`${threadRoot.text}\` とTwitterに投稿しました`,
+      text: "メェ〜"
+    });
+    return;
+  } else if (event.text.match(postPhrase())) {
+    const [threadRoot]: MessageEvent[] = await getHistory(
+      process.env.SLACK_OAUTH_TOKEN,
+      {
+        channel: event.channel
+      }
+    )
+      .then(x => x.messages as Array<MessageEvent>)
+      .then(xs => xs.filter(x => x.ts === event.thread_ts));
+
+    threadRoot.text = emoji.emojify(threadRoot.text);
+    if (threadRoot.text.length > 140) {
+      await app.client.chat.postMessage({
+        token: context.botToken,
+        channel: event.channel,
+        text: "140文字以上だメェ〜",
+        thread_ts: event.thread_ts
+      });
+      return;
+    }
+
+    await post(threadRoot);
+    await app.client.chat.postMessage({
+      token: context.botToken,
+      channel: event.channel,
+      text: `\`${threadRoot.text}\` とTwitterに投稿しましたメェ〜`,
       thread_ts: event.thread_ts
     });
   } else {
     await app.client.chat.postMessage({
       token: context.botToken,
       channel: event.channel,
-      text: "メンションをつけて `投稿して` と言ってください",
+      text: "メンションをつけて `投稿して` と言ってくださいメェ〜",
       thread_ts: event.thread_ts
     });
   }
 };
 
 const guard = (event: AppMentionEvent): boolean => {
-  return [
-    !event.thread_ts,
-    event.channel !== process.env.SLACK_ENABLE_CHANNEL
-  ].some(x => x);
+  return [event.channel !== process.env.SLACK_ENABLE_CHANNEL].some(x => x);
 };
 
 const post = async (threadRoot: MessageEvent) => {
