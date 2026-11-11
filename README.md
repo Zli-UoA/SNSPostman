@@ -8,9 +8,12 @@ Slackの投稿にメンションをつけるとTwitterに投稿してくれるBo
 
 ### Develop
 
-- `npm install`
+- 開発・ビルドにはNode 24を使用します（配布bundleの実行対象はNode 10）。
+- `npm ci`
 - `.env` ファイルに下記の環境変数を記入
-- `npm run dev` をして `node dist/main.js` を実行
+- `npm run dev` で監視ビルドし、別ターミナルで `npm start` を実行
+- `npm test` でビルドと外部送信をmockしたbundle起動・署名検証を実行
+- 配布前に `npm run build` で `dist/main.js` を再生成
 
 ### Production
 

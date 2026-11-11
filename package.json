@@ -4,10 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "parcel serve -t node src/main.ts",
+    "test": "npm run build && node test/bundle-smoke.cjs",
+    "dev": "esbuild src/main.ts --bundle --platform=node --target=node10 --outfile=dist/main.js --sourcemap --watch=forever --supported:template-literal=false",
     "start": "NODE_ENV=dev node dist/main.js",
-    "build": "parcel build -t node --bundle-node-modules --no-source-maps src/main.ts",
+    "build": "esbuild src/main.ts --bundle --platform=node --target=node10 --outfile=dist/main.js --minify --supported:template-literal=false",
     "deploy": "gcloud builds submit --project snspostman --tag gcr.io/snspostman/bot_image"
   },
   "keywords": [],
@@ -18,8 +18,8 @@
     "@types/node-emoji": "^1.8.1",
     "@types/node-fetch": "^2.3.7",
     "dotenv": "^8.0.0",
-    "parcel-bundler": "^1.12.3",
-    "typescript": "^3.5.3"
+    "typescript": "^3.5.3",
+    "esbuild": "0.28.2"
   },
   "dependencies": {
     "@slack/bolt": "^1.2.0",
