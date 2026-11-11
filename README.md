@@ -40,3 +40,7 @@ CloudRun等にDeployしてください.
   - 呟いて
   - つぶやい
 
+
+## Build runtime
+
+開発・ビルドにはNode 24を使用し、`npm ci` の後に `npm run build` を実行します。Dockerの実行環境はNode 10です。
